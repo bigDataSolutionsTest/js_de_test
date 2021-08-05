@@ -1,0 +1,9 @@
+1 ) opening index.html (empty page found )
+
+2 ) inspacting element trying to see if there is any js code error 
+
+3 ) in line 32 of index.html page change the name of script to script.js
+
+4 ) reading code trying to inderstand it and commenting lines 
+
+5 ) refactoring the code 

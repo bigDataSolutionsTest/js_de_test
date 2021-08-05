@@ -1,3 +1,4 @@
+//this is json format and containt X-axis value given period for eash
 var data = [
   {
     "Cheese": 22.2,
@@ -19,9 +20,10 @@ var data = [
   }
 ];
 
-function generateGraph() {
+function data_preprcessing()
+{
   var dataWithTotal = [];
-  
+  //looping over our data
   for (var i = 0; i < data.length; i++) {
     var temp = data[i];
     total = 0;
@@ -33,20 +35,27 @@ function generateGraph() {
     temp.total = total / 3;
     dataWithTotal.push(temp);
   }
-  
-  var labels = [];
+   //extracting periods for x-axes
+  var periods = [];
   
   for (var i = 0; i < dataWithTotal.length; i++) {
-    labels.push(dataWithTotal[i]['period']);
+    periods.push(dataWithTotal[i]['period']);
   }
-  
+    
+  return {periods , dataWithTotal};
+}
+
+
+function generateGraph(graph_data) {
   var graphValues = [];
-  var keys = Object.keys(dataWithTotal[0]);
+  // keys contain the names i mean strings such as cholcate ...
+  var labels = Object.keys(graph_data.dataWithTotal[0]);
   
-  for (var i = 0; i < keys.length; i++) {
-    if(keys[i] !== "period") {
+  // preparing background colors and labels of the chart 
+  for (var i = 0; i < labels.length; i++) {
+    if(labels[i] !== "period") {
       var temp = {
-        label: keys[i], 
+        label: labels[i], 
         data: [],
         backgroundColor: [
           'rgba(255, 99, 132, 0.2)',
@@ -62,22 +71,25 @@ function generateGraph() {
         ], 
       };
   
-      for (var n = 0; n < dataWithTotal.length; n++) {
-        temp.data.push(dataWithTotal[n][keys[i]])
+      for (var n = 0; n < graph_data.dataWithTotal.length; n++) {
+        temp.data.push(graph_data.dataWithTotal[n][labels[i]])
       }
       
       graphValues.push(temp);
     }
   }
   
+
+  //drawing lines
   var ctx = document.getElementById('myChart').getContext('2d');
   var myChart = new Chart(ctx, {
     type: 'line',
     data: {
-      labels: labels,
+      labels: graph_data.periods,
       datasets: graphValues
     }
   });
+  //end drawing lines
 }
-
-generateGraph();
+let graph_data = data_preprcessing();
+generateGraph(graph_data);
