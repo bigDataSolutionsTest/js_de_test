@@ -1,4 +1,3 @@
-//this is json format and containt X-axis value given period for eash
 var data = [
   {
     "Cheese": 22.2,
