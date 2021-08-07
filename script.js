@@ -20,23 +20,33 @@ var data = [
 ]
 
 function generateGraph() {
-  const dataWithTotal = data.map(temp => {
-    const sum = Object.values(temp)
-      .filter(element => !isNaN(element))
-      .reduce((total, value) => total + value, 0)
-
-    temp.total = (sum / 3).toFixed(1)
-
-    return temp
+  const dataWithTotal = data.map(d => {
+    const total = Object.values(d)
+      .filter(v => !isNaN(v))
+      .reduce((sum, value) => sum + value, 0)
+    return { ...d, total: +(total / 3).toFixed(1) }
   })
+
+  const datasets = Object.keys(dataWithTotal[0])
+    .filter(key => key !== 'period')
+    .map(key => ({
+      label: key,
+      data: dataWithTotal.map(d => ({
+        period: d.period,
+        value: d[key],
+      })),
+    }))
 
   const labels = dataWithTotal.map(({ period }) => period)
 
-  const keys = Object.keys(dataWithTotal[0]).filter(key => key !== 'period')
-  const graphValues = keys.map(label => {
-    return {
-      label,
-      data: dataWithTotal.map(d => d[label]),
+  const ctx = document.getElementById('myChart').getContext('2d')
+  const myChart = new Chart(ctx, {
+    type: 'line',
+    options: {
+      parsing: {
+        xAxisKey: 'period',
+        yAxisKey: 'value',
+      },
       backgroundColor: [
         'rgba(255, 99, 132, 0.2)',
         'rgba(54, 162, 235, 0.2)',
@@ -49,15 +59,10 @@ function generateGraph() {
         'rgba(255, 206, 86, 1)',
         'rgba(75, 192, 192, 1)',
       ],
-    }
-  })
-
-  const ctx = document.getElementById('myChart').getContext('2d')
-  const myChart = new Chart(ctx, {
-    type: 'line',
+    },
     data: {
-      labels: labels,
-      datasets: graphValues,
+      labels,
+      datasets,
     },
   })
 }
